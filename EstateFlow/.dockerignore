@@ -1,0 +1,17 @@
+__pycache__/
+*.pyc
+*.pyo
+*.pyd
+
+.venv/
+venv/
+
+.DS_Store
+.idea/
+.vscode/
+
+outputs/
+database.sqlite
+
+.git/
+.gitignore
