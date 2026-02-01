@@ -6,7 +6,6 @@ ENV/
 .vscode/
 
 *.sqlite
-data/*.csv
 !data/sample_listing.csv
 
 __pycache__/
