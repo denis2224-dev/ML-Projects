@@ -8,21 +8,26 @@ from typing import Any
 import requests
 import yaml
 
+
 PROJECT_ROOT = Path(__file__).resolve().parents[2]
 CONFIG_PATH = PROJECT_ROOT / "config" / "config.yaml"
 RAW_DIR = PROJECT_ROOT / "data" / "raw"
+
 
 def load_config(config_path: Path = CONFIG_PATH) -> dict[str, Any]:
     with open(config_path, "r", encoding="utf-8") as file:
         return yaml.safe_load(file)
 
+
 def ensure_raw_dir(path: Path = RAW_DIR) -> None:
     path.mkdir(parents=True, exist_ok=True)
+
 
 def unix_to_iso(ts: int | None) -> str | None:
     if ts is None:
         return None
     return datetime.fromtimestamp(ts, tz=timezone.utc).isoformat()
+
 
 def save_raw_json(payload: dict[str, Any], prefix: str = "weather") -> Path:
     ensure_raw_dir()
@@ -34,9 +39,10 @@ def save_raw_json(payload: dict[str, Any], prefix: str = "weather") -> Path:
 
     return output_path
 
+
 def extract_weather(config: dict[str, Any]) -> dict[str, Any]:
-    api_key = config["api"]["weather_api_key"]
-    base_url = config["api"]["weather_base_url"]
+    api_key = config["api"]["weather_api_key"].strip()
+    base_url = config["api"]["weather_base_url"].strip()
     units = config["api"].get("units", "metric")
 
     lat = config["location"]["lat"]
@@ -51,13 +57,21 @@ def extract_weather(config: dict[str, Any]) -> dict[str, Any]:
     }
 
     response = requests.get(base_url, params=params, timeout=30)
+
+    print("Status:", response.status_code)
+    print("Content-Type:", response.headers.get("Content-Type"))
+    print("Response preview:", response.text[:300])
+
     response.raise_for_status()
 
+    content_type = response.headers.get("Content-Type", "")
+    if "application/json" not in content_type:
+        raise ValueError(
+            f"Expected JSON response but got {content_type}. "
+            f"Check weather_base_url in config.yaml."
+        )
+
     payload = response.json()
-
-    payload["main"]["temp"]
-    payload["wind"]["speed"]
-
     raw_file = save_raw_json(payload)
 
     weather_info = payload.get("weather", [])
@@ -90,10 +104,15 @@ def extract_weather(config: dict[str, Any]) -> dict[str, Any]:
 
     return record
 
+
 def main() -> None:
-    config = load_config()
-    record = extract_weather(config)
-    print(json.dumps(record, indent=2, ensure_ascii=False))
+    try:
+        config = load_config()
+        record = extract_weather(config)
+        print(json.dumps(record, indent=2, ensure_ascii=False))
+    except Exception as error:
+        print("Error:", error)
+
 
 if __name__ == "__main__":
     main()
