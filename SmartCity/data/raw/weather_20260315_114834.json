@@ -1,0 +1,45 @@
+{
+  "coord": {
+    "lon": 28.8638,
+    "lat": 47.0105
+  },
+  "weather": [
+    {
+      "id": 800,
+      "main": "Clear",
+      "description": "clear sky",
+      "icon": "01d"
+    }
+  ],
+  "base": "stations",
+  "main": {
+    "temp": 14.01,
+    "feels_like": 12.09,
+    "temp_min": 12.4,
+    "temp_max": 14.01,
+    "pressure": 1016,
+    "humidity": 24,
+    "sea_level": 1016,
+    "grnd_level": 1001
+  },
+  "visibility": 10000,
+  "wind": {
+    "speed": 7.2,
+    "deg": 90
+  },
+  "clouds": {
+    "all": 0
+  },
+  "dt": 1773575082,
+  "sys": {
+    "type": 2,
+    "id": 2002036,
+    "country": "MD",
+    "sunrise": 1773548290,
+    "sunset": 1773590942
+  },
+  "timezone": 7200,
+  "id": 618426,
+  "name": "Chișinău",
+  "cod": 200
+}
